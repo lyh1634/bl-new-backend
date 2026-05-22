@@ -433,17 +433,6 @@
     const iframe = document.getElementById('profileIframe');
     iframe.src = '/idol_profile.html';
     modal.style.display = 'flex';
-    iframe.onload = function() {
-      iframe.contentWindow.postMessage({
-        type: 'loadSettings',
-        settings: {
-          idolName: settings.idolName,
-          idolAvatar: settings.idolAvatar,
-          myNick: settings.myNick,
-          myName: settings.myName
-        }
-      }, '*');
-    };
   }
 
   window.closeProfileModal = function() {
