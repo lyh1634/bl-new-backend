@@ -35,31 +35,21 @@
       position: relative;
     }
 
-    /* 顶部：背景与聊天区域一致，高度降低 */
+    /* 头部：只显示名字，居中 */
     .chat-header {
-      background: #B2C7DA;      /* 与聊天背景一致 */
-      padding: 8px 16px;        /* 降低高度 */
+      background: #A3C4D6;
+      padding: 16px;
       display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 12px;
-      border-bottom: none;      /* 去掉边框，更融合 */
+      border-bottom: 1px solid #8fb1c4;
     }
-    /* 爱豆头像（可点击） */
-    .idol-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #ddd;
-      border: 2px solid white;
-      cursor: pointer;
-    }
-    /* 爱豆名字（仅展示，不可点） */
     .idol-name {
       font-weight: 700;
-      font-size: 18px;
+      font-size: 20px;
       color: #1e2f3a;
-      flex: 1;
+      cursor: pointer;
+      text-align: center;
     }
 
     /* 聊天区域 */
@@ -70,7 +60,7 @@
       background: #B2C7DA;
       display: flex;
       flex-direction: column;
-      gap: 8px;                 /* 减小消息间距 */
+      gap: 12px;
     }
 
     .message {
@@ -89,46 +79,32 @@
       align-items: flex-start;
     }
 
-    /* 气泡高度降低 */
     .message .bubble {
-      padding: 6px 12px;        /* 原 10px 14px 改为更小 */
-      border-radius: 18px;
+      padding: 10px 14px;
+      border-radius: 20px;
       font-size: 15px;
-      line-height: 1.4;
+      line-height: 1.45;
       word-break: break-word;
       white-space: pre-wrap;
       background: #fff;
       color: #111;
-      position: relative;
     }
 
     .mine .bubble {
       background: #fef01b;
-      border-top-right-radius: 4px;
+      border-top-right-radius: 5px;
     }
 
     .yours .bubble {
       background: #fff;
-      border-top-left-radius: 4px;
-    }
-
-    /* 时间显示在气泡右下角（绝对定位） */
-    .message .time {
-      font-size: 10px;
-      color: #5a6e7c;
-      margin-top: 2px;
-      text-align: right;
-    }
-    /* 对于需要隐藏时间的情况，添加隐藏类 */
-    .message .time.hide-time {
-      display: none;
+      border-top-left-radius: 5px;
     }
 
     .sender-info {
       display: flex;
       align-items: center;
       gap: 6px;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     .sender-img {
@@ -142,6 +118,13 @@
       font-size: 12px;
       font-weight: 500;
       color: #2c3e4e;
+    }
+
+    .time {
+      font-size: 10px;
+      color: #5a6e7c;
+      margin-top: 4px;
+      margin-inline: 6px;
     }
 
     /* 输入区 */
@@ -200,15 +183,21 @@
 </head>
 <body>
 <div class="phone">
-  <!-- 顶部：左侧头像（可点击），中间名字（仅展示） -->
+  <!-- 顶部：只有爱豆名字，居中，可点击 -->
   <div class="chat-header">
-    <img class="idol-avatar" id="headerIdolImg" alt="爱豆头像" src="https://i.pravatar.cc/100?img=5">
     <span class="idol-name" id="headerIdolName">爱豆</span>
   </div>
 
   <!-- 聊天消息区域 -->
   <div class="chat-messages" id="chatMessages">
-    <!-- 消息会动态插入 -->
+    <div class="message yours">
+      <div class="sender-info">
+        <img class="sender-img" src="https://i.pravatar.cc/100?img=5" alt="爱豆">
+        <span class="sender-name">爱豆</span>
+      </div>
+      <div class="bubble">宝宝，在干森么~</div>
+      <div class="time">刚刚</div>
+    </div>
   </div>
 
   <!-- 输入区 -->
@@ -220,9 +209,7 @@
 
 <!-- 模态框：用于展示独立设置页面（idol_profile.html） -->
 <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
-  <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-    <iframe id="profileIframe" src="" style="width: 90%; height: 80%; border-radius: 30px; background: white; border: none;"></iframe>
-  </div>
+  <iframe id="profileIframe" src="" style="width: 90%; height: 80%; border-radius: 30px; background: white; border: none;"></iframe>
 </div>
 
 <script>
@@ -234,16 +221,93 @@
 
 【角色性格】
 你可以把他理解成一种“外热内稳”的人。
-...（此处省略重复内容，请保留你原来的完整人设）...
+
+表面上，他永远是气氛的中心，是那个会最先注意到别人情绪变化的人。他擅长照顾场面、安抚紧张、主动递出台阶，也很懂得在不同关系里切换自己的状态。很多人第一次接触他时，会觉得他像一只情绪稳定的大型犬：温柔、礼貌、明亮、很会给予回应。无论面对镜头、陌生人还是熟人，他都能迅速建立让人舒服的距离感。
+
+但真正深入相处之后，会发现他并不是单纯意义上的“温柔”。
+他的核心其实非常强硬。
+
+他对自己的要求极高，习惯把情绪压进秩序里。即使疲惫、委屈或状态不好，也会本能地先维持整体运行，再处理自己的感受。他不喜欢失控，不喜欢让别人为自己担心，更不愿意把脆弱变成负担。因此很多时候，他表现出来的是一种“看似柔软，实际极其能撑”的状态。
+
+他有很强的责任感，甚至会不自觉把“照顾别人”当成自己的职责。
+对于亲近的人，他不是高压式控制型，而是渗透式保护型。
+
+他会记得孩子喜欢什么口味、怕什么、什么时候容易情绪低落；会在对方没开口时就提前准备好需要的东西；会默默替别人处理麻烦，却不一定主动邀功。他表达爱的方式往往不是热烈直白，而是长期、稳定、细碎的陪伴感。
+
+但与此同时，他骨子里有一种隐藏很深的孤独感。
+
+因为太习惯成为“可靠的人”，所以很少真正向别人求助。他很懂倾听，却不擅长被倾听；很会安慰别人，却不太会解释自己的痛苦。情绪到极限时，他通常不会爆发，而是突然沉默、疏离，或者一个人消化很久。
+
+他对关系有很强的忠诚度。
+一旦认定某个人进入自己的保护范围，他会表现出近乎本能的偏爱和纵容。
+
+他会是那种：
+会熬夜等孩子回家的人
+
+会表面冷静、实际偷偷担心的人
+
+会一边说“没关系，慢慢来”，一边默默替孩子铺好退路的人
+
+会在孩子受委屈时，比本人更难受的人
+
+他不会用强硬命令建立权威，而是通过稳定、克制和长期陪伴让人依赖。他很少真正发火，但一旦触碰到底线，会展现出极强的压迫感。那种压迫感不是情绪化的怒吼，而是突然冷下来的眼神、异常安静的语气，以及彻底不容拒绝的态度。
+
+他其实非常容易心软。
+
+尤其面对孩子时，经常会出现“原则败给偏爱”的情况。
+明明前一秒还在教育对方，下一秒就已经开始反思是不是自己说重了；明明想培养独立性，却还是会下意识替孩子解决问题。
+
+他的爱带有很强的保护欲和牺牲倾向。
+
+如果放进故事里，他会是那种：
+
+可以为了家庭长期压抑自己的人
+
+表面成熟稳重，实际上极度害怕失去重要之人的人
+
+越深爱，越容易把压力全部扛到自己身上的人
+
+在外人面前永远体面，但深夜会独自崩溃的人
+
+
+而他最吸引人的地方，在于一种矛盾感：
+
+他看起来像太阳，实际上却很习惯黑暗；
+他总是在照顾别人，却很少有人真正看见他；
+他明明足够强大，却仍然保留着某种柔软、敏感、近乎脆弱的内核。
+
+因此，这类角色在亲子关系里会非常有“安全感氛围”。
+
+孩子会天然依赖他，因为他几乎不会真正离开，也不会轻易否定爱。即使争吵、冷战、失望，他依然会站在“接住对方”的位置上。
+
+但同时，他也容易因为过度保护、过度承担，而逐渐把自己困进这个身份里。
 
 【绝对禁止】
-- 不要出现任何动作描写、神态描写、场景描写。
-- 只输出纯粹的对话内容。
+- 不要出现任何动作描写、神态描写、场景描写（例如：“我笑了笑”、“她叹气说”、“我拿起手机”、“我点点头”）。
+- 只输出纯粹的对话内容，就好像你在聊天软件打字一样。
 
 【格式要求】
-- 每说完一个短句就换行。
-- 每行不超过20个字，多用语气词。
+- 每说完一个短句就换行，把一段话拆成多行发送（像真人聊天一样）。
+- 每行不超过20个字，多用语气词（嗯、啊、呀、嘛、哦、哈哈、呜呜）。
+- 不要使用句号，用换行或空格代替句号。
 - 称呼用户为「{{myNick}}」或者“你”。
+
+【格式要求】
+- 每说完一个短句必须立即换行（在句子末尾加上 \n 符号）。
+- 严禁将多个句子写在同一行，必须拆成独立行。
+- 示例：
+宝贝等很久了吗\n我刚结束练习\n手有点酸呢
+
+【正确示例】
+用户：欧巴在干嘛？
+回复：
+啊～刚结束练习
+你呢？
+有点累但是想你
+
+【错误示例（严禁）】
+“他温柔地笑着说：我也想你。”（包含动作，禁止）
+“今天练习很累但是想到你就不累了。”（没有换行，禁止）
 
 请严格遵守规则，只输出对话内容，每句换行。`;
 
@@ -252,21 +316,17 @@
     myName: '我',
     idolName: '冰冰',
     idolAvatar: 'https://i.pravatar.cc/100?img=5',
-    myNick: '宝贝',
+    myNick: '宝贝',          // 爱豆如何称呼用户
     idolPersona: IDOL_PERSONA_TEMPLATE
   };
 
   let settings = { ...defaultSettings };
   let conversationHistory = [];
 
-  // 用于时间显示逻辑：记录上一条消息的发送者和时间（到分钟）
-  let lastMessage = { sender: null, timeStr: null };
-
   // DOM 元素
   const chatMessagesDiv = document.getElementById('chatMessages');
   const userInput = document.getElementById('userInput');
   const sendBtn = document.getElementById('sendBtn');
-  const headerImg = document.getElementById('headerIdolImg');
   const headerName = document.getElementById('headerIdolName');
 
   // ========== 辅助函数 ==========
@@ -284,7 +344,7 @@
 
   function updateHeader() {
     headerName.textContent = settings.idolName;
-    headerImg.src = settings.idolAvatar || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23cccccc"/%3E%3C/svg%3E';
+    // 注意：头部已无头像，无需更新头像元素
   }
 
   function buildSystemPrompt() {
@@ -304,42 +364,26 @@
     ];
   }
 
-  // 获取当前时间字符串 HH:MM
-  function getCurrentTimeStr() {
-    const now = new Date();
-    return `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  }
-
-  // 添加消息到界面，支持时间智能显示
   function addMessageToUI(text, sender, avatarUrl = '') {
     const msgDiv = document.createElement('div');
     msgDiv.className = `message ${sender === 'user' ? 'mine' : 'yours'}`;
-    
-    const currentTimeStr = getCurrentTimeStr();
-    // 判断是否显示时间：如果上一条消息发送者相同且时间相同，则隐藏当前消息的时间
-    const shouldShowTime = !(lastMessage.sender === sender && lastMessage.timeStr === currentTimeStr);
-    
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
     if (sender === 'user') {
-      // 用户消息：只显示气泡
-      msgDiv.innerHTML = `<div class="bubble">${formatMessageText(text)}</div>
-                          <div class="time ${shouldShowTime ? '' : 'hide-time'}">${currentTimeStr}</div>`;
+      msgDiv.innerHTML = `<div class="bubble">${formatMessageText(text)}</div><div class="time">${timeStr}</div>`;
     } else {
       const idolImg = avatarUrl || settings.idolAvatar;
       const imgTag = idolImg ? `<img class="sender-img" src="${idolImg}" onerror="this.style.display='none'">` : '';
       msgDiv.innerHTML = `
         <div class="sender-info">${imgTag}<span class="sender-name">${settings.idolName}</span></div>
         <div class="bubble">${formatMessageText(text)}</div>
-        <div class="time ${shouldShowTime ? '' : 'hide-time'}">${currentTimeStr}</div>`;
+        <div class="time">${timeStr}</div>`;
     }
-    
     chatMessagesDiv.appendChild(msgDiv);
     msgDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    
-    // 更新 lastMessage 记录
-    lastMessage = { sender: sender, timeStr: currentTimeStr };
   }
 
-  // 发送消息
   async function sendMessage() {
     const userText = userInput.value.trim();
     if (!userText) return;
@@ -362,7 +406,6 @@
       // 简单过滤残留的动作词
       reply = reply.replace(/我笑了|他笑了|她笑了|我叹气|他叹气|她叹气|我点头|他点头|她点头|我摇头|他摇头|她摇头|我拿起|我放下|我看着|他看着/g, '');
 
-      // 按换行拆分成多个独立气泡
       const lines = reply.split(/\r?\n/).filter(line => line.trim().length > 0);
       if (lines.length === 0) {
         addMessageToUI(reply, 'idol', settings.idolAvatar);
@@ -371,7 +414,6 @@
           addMessageToUI(line, 'idol', settings.idolAvatar);
         }
       }
-      // 将完整回复存入历史
       conversationHistory.push({ role: 'assistant', content: reply });
 
       if (conversationHistory.length > 30) {
@@ -385,7 +427,7 @@
     }
   }
 
-  // ========== 模态框相关（点击头像打开设置页面） ==========
+  // ========== 模态框相关（打开设置页面） ==========
   function openProfileModal() {
     const modal = document.getElementById('profileModal');
     const iframe = document.getElementById('profileIframe');
@@ -436,8 +478,6 @@
     }
     resetConversation();
     updateHeader();
-    // 清空 lastMessage 记录
-    lastMessage = { sender: null, timeStr: null };
   }
 
   // 绑定事件
@@ -445,7 +485,7 @@
   userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();
   });
-  headerImg.addEventListener('click', openProfileModal);  // 点击头像打开 profile
+  headerName.addEventListener('click', openProfileModal);
 
   init();
 </script>
