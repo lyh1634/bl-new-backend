@@ -1,0 +1,66 @@
+<!-- public/idol_profile.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>爱豆档案</title>
+  <style>
+    body {
+      font-family: system-ui;
+      margin: 0;
+      padding: 20px;
+      background: #f9f5ef;
+      color: #2c3e4e;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .profile-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 16px 0;
+    }
+    .info {
+      background: white;
+      padding: 16px;
+      border-radius: 28px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .close-btn {
+      background: #fee500;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 30px;
+      font-weight: bold;
+      margin-top: 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <img id="profileAvatar" class="profile-img" src="" alt="爱豆照片">
+  <h1 id="profileName">爱豆名字</h1>
+  <div class="info" id="profileDesc">
+    <!-- 这里可以写详细介绍 -->
+    这里放置爱豆的个人信息，例如生日、爱好、代表作品等等。
+  </div>
+  <button class="close-btn" onclick="window.parent.closeProfileModal()">关闭</button>
+
+  <script>
+    // 接收父窗口传来的数据（可选）
+    window.addEventListener('message', function(e) {
+      if (e.data.type === 'updateProfile') {
+        document.getElementById('profileName').innerText = e.data.name;
+        document.getElementById('profileAvatar').src = e.data.avatar;
+        // 也可以根据需求修改描述内容
+      }
+    });
+  </script>
+</body>
+</html>
