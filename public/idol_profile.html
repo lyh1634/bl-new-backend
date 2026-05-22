@@ -181,6 +181,18 @@
     }
   });
 
+  // 关闭模态框（直接操作父窗口 DOM）
+  function closeModal() {
+    const modal = window.parent.document.getElementById('profileModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+    // 可选：清空 iframe src
+    const iframe = window.parent.document.getElementById('profileIframe');
+    if (iframe) iframe.src = '';
+  }
+
+  // 保存并关闭
   function saveAndClose() {
     const newSettings = {
       idolName: idolNameInput.value.trim() || '爱豆',
@@ -188,18 +200,22 @@
       myNick: myNickInput.value.trim() || '宝贝',
       myName: myNameInput.value.trim() || '我'
     };
+    // 发送消息给父窗口更新数据
     window.parent.postMessage({
       type: 'saveSettings',
       settings: newSettings
     }, '*');
+    // 关闭模态框
+    closeModal();
   }
 
-  function cancel() {
-    window.parent.postMessage({ type: 'closeProfile' }, '*');
+  // 取消并关闭
+  function cancelAndClose() {
+    closeModal();
   }
 
   saveBtn.addEventListener('click', saveAndClose);
-  cancelBtn.addEventListener('click', cancel);
+  cancelBtn.addEventListener('click', cancelAndClose);
 </script>
 </body>
 </html>
