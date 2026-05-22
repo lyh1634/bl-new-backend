@@ -1,66 +1,212 @@
-<!-- public/idol_profile.html -->
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>爱豆档案</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>爱豆档案 & 设置</title>
   <style>
-    body {
-      font-family: system-ui;
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #f5f7fa;
+      font-family: system-ui, -apple-system, 'Helvetica Neue', sans-serif;
       padding: 20px;
-      background: #f9f5ef;
-      color: #2c3e4e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .profile-card {
+      background: white;
+      border-radius: 32px;
+      max-width: 400px;
+      width: 100%;
+      padding: 28px 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      margin: auto;
     }
     h1 {
       font-size: 24px;
-      margin-bottom: 8px;
+      text-align: center;
+      margin-bottom: 24px;
+      color: #1e2f3a;
     }
-    .profile-img {
-      width: 120px;
-      height: 120px;
+    .avatar-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .avatar-preview {
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       object-fit: cover;
-      margin: 16px 0;
+      background: #e2e8f0;
+      border: 3px solid #A3C4D6;
+      margin-bottom: 12px;
     }
-    .info {
+    .file-label {
+      background: #eef2f6;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #2c3e4e;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 20px;
+      font-size: 16px;
       background: white;
-      padding: 16px;
-      border-radius: 28px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      outline: none;
     }
-    .close-btn {
+    .input-group input:focus {
+      border-color: #A3C4D6;
+      box-shadow: 0 0 0 2px rgba(163,196,214,0.3);
+    }
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    button {
+      flex: 1;
       background: #fee500;
       border: none;
       padding: 12px;
-      width: 100%;
       border-radius: 30px;
-      font-weight: bold;
-      margin-top: 20px;
+      font-weight: 600;
       font-size: 16px;
       cursor: pointer;
+      transition: 0.2s;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+    .cancel-btn {
+      background: #e2e8f0;
+      color: #1e2f3a;
     }
   </style>
 </head>
 <body>
-  <img id="profileAvatar" class="profile-img" src="" alt="爱豆照片">
-  <h1 id="profileName">爱豆名字</h1>
-  <div class="info" id="profileDesc">
-    <!-- 这里可以写详细介绍 -->
-    这里放置爱豆的个人信息，例如生日、爱好、代表作品等等。
+<div class="profile-card">
+  <h1>✨ 爱豆档案 ✨</h1>
+  
+  <div class="avatar-section">
+    <img id="avatarImg" class="avatar-preview" src="https://i.pravatar.cc/100?img=5" alt="头像">
+    <label class="file-label">📷 从手机上传
+      <input type="file" id="avatarUpload" accept="image/*">
+    </label>
   </div>
-  <button class="close-btn" onclick="window.parent.closeProfileModal()">关闭</button>
 
-  <script>
-    // 接收父窗口传来的数据（可选）
-    window.addEventListener('message', function(e) {
-      if (e.data.type === 'updateProfile') {
-        document.getElementById('profileName').innerText = e.data.name;
-        document.getElementById('profileAvatar').src = e.data.avatar;
-        // 也可以根据需求修改描述内容
+  <div class="input-group">
+    <label>爱豆名字</label>
+    <input type="text" id="idolNameInput" placeholder="例如：智秀">
+  </div>
+  <div class="input-group">
+    <label>爱豆对我的称呼</label>
+    <input type="text" id="myNickInput" placeholder="例如：宝贝、欧巴">
+  </div>
+  <div class="input-group">
+    <label>我的昵称（可选）</label>
+    <input type="text" id="myNameInput" placeholder="例如：小明">
+  </div>
+
+  <div class="button-group">
+    <button class="cancel-btn" id="cancelBtn">取消</button>
+    <button id="saveBtn">保存并关闭</button>
+  </div>
+</div>
+
+<script>
+  // 初始默认值（等待父窗口传入）
+  let currentSettings = {
+    idolName: '智秀',
+    idolAvatar: 'https://i.pravatar.cc/100?img=5',
+    myNick: '宝贝',
+    myName: '我'
+  };
+
+  const avatarImg = document.getElementById('avatarImg');
+  const idolNameInput = document.getElementById('idolNameInput');
+  const myNickInput = document.getElementById('myNickInput');
+  const myNameInput = document.getElementById('myNameInput');
+  const avatarUpload = document.getElementById('avatarUpload');
+  const saveBtn = document.getElementById('saveBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+
+  // 从父窗口接收设置
+  window.addEventListener('message', function(e) {
+    if (e.data.type === 'loadSettings') {
+      currentSettings = e.data.settings;
+      idolNameInput.value = currentSettings.idolName || '智秀';
+      myNickInput.value = currentSettings.myNick || '宝贝';
+      myNameInput.value = currentSettings.myName || '我';
+      if (currentSettings.idolAvatar) {
+        avatarImg.src = currentSettings.idolAvatar;
       }
-    });
-  </script>
+    }
+  });
+
+  // 上传头像并转为 base64
+  avatarUpload.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const base64 = ev.target.result;
+        avatarImg.src = base64;
+        currentSettings.idolAvatar = base64;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // 保存并发送回父窗口
+  function saveAndClose() {
+    const newSettings = {
+      idolName: idolNameInput.value.trim() || '爱豆',
+      idolAvatar: currentSettings.idolAvatar || avatarImg.src,
+      myNick: myNickInput.value.trim() || '宝贝',
+      myName: myNameInput.value.trim() || '我'
+    };
+    // 发送给父窗口
+    window.parent.postMessage({
+      type: 'saveSettings',
+      settings: newSettings
+    }, '*');
+  }
+
+  // 取消直接关闭
+  function cancel() {
+    window.parent.postMessage({ type: 'closeProfile' }, '*');
+  }
+
+  saveBtn.addEventListener('click', saveAndClose);
+  cancelBtn.addEventListener('click', cancel);
+
+  // 如果父窗口没有及时响应，也可以让用户直接关闭（备选）
+  window.parent.postMessage({ type: 'profileReady' }, '*');
+</script>
 </body>
 </html>
