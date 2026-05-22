@@ -3,641 +3,210 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>爱豆聊天室 · 专属对话</title>
+  <title>爱豆档案 & 设置</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
     }
-
     body {
-      background: #B2C7DA;
-      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      font-family: system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+      padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 0;
     }
-
-    /* 手机容器 */
-    .phone {
-      width: 100%;
-      height: 100vh;          /* 占满整个视口高度 */
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-      box-shadow: none;       /* 去掉阴影 */
-      border-radius: 0;       /* 去掉圆角 */
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* 头部 */
-    .chat-header {
-      background: #A3C4D6;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid #8fb1c4;
-    }
-
-    .back-btn {
-      font-size: 22px;
-      cursor: pointer;
-      font-weight: 500;
-      width: 32px;
-      color: #1e2f3a;
-    }
-
-    .idol-img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #ddd;
-      border: 2px solid white;
-    }
-
-    .idol-name {
-      font-weight: 700;
-      font-size: 18px;
-      color: #1e2f3a;
-      flex: 1;
-    }
-
-    .menu-btn {
-      font-size: 22px;
-      cursor: pointer;
-      padding: 4px 8px;
-    }
-
-    /* 设置面板 */
-    .settings-panel {
-      background: #f8f9fc;
-      padding: 16px;
-      display: none;
-      flex-direction: column;
-      gap: 14px;
-      border-bottom: 1px solid #e2e6ea;
-    }
-
-    .settings-panel .row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .settings-panel label {
-      width: 100px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #2c3e4e;
-    }
-
-    .settings-panel input, .settings-panel .file-label {
-      flex: 1;
-      padding: 8px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      font-size: 14px;
+    .profile-card {
       background: white;
-      outline: none;
-      transition: 0.2s;
+      border-radius: 32px;
+      max-width: 400px;
+      width: 100%;
+      padding: 28px 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      margin: auto;
     }
-
-    .settings-panel input:focus {
-      border-color: #A3C4D6;
-      box-shadow: 0 0 0 2px rgba(163, 196, 214, 0.3);
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 24px;
+      color: #1e2f3a;
     }
-
-    .avatar-preview {
+    .avatar-section {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
+      margin-bottom: 24px;
     }
-
-    .avatar-preview img {
-      width: 40px;
-      height: 40px;
+    .avatar-preview {
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       object-fit: cover;
-      background: #ddd;
+      background: #e2e8f0;
+      border: 3px solid #A3C4D6;
+      margin-bottom: 12px;
     }
-
     .file-label {
       background: #eef2f6;
-      text-align: center;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 14px;
       cursor: pointer;
       display: inline-block;
-      margin: 0;
     }
-
     input[type="file"] {
       display: none;
     }
-
-    .settings-panel button {
+    .input-group {
+      margin-bottom: 20px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #2c3e4e;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 20px;
+      font-size: 16px;
+      background: white;
+      outline: none;
+    }
+    .input-group input:focus {
+      border-color: #A3C4D6;
+      box-shadow: 0 0 0 2px rgba(163,196,214,0.3);
+    }
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    button {
+      flex: 1;
       background: #fee500;
       border: none;
-      padding: 10px;
-      border-radius: 14px;
+      padding: 12px;
+      border-radius: 30px;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 16px;
       cursor: pointer;
-      margin-top: 6px;
-      color: #2c3e4e;
       transition: 0.2s;
     }
-
-    .settings-panel button:active {
-      background: #e6cf00;
+    button:active {
       transform: scale(0.97);
     }
-
-    /* 聊天区域 */
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px 12px;
-      background: #B2C7DA;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .message {
-      display: flex;
-      flex-direction: column;
-      max-width: 80%;
-    }
-
-    .message.mine {
-      align-self: flex-end;
-      align-items: flex-end;
-    }
-
-    .message.yours {
-      align-self: flex-start;
-      align-items: flex-start;
-    }
-
-    .message .bubble {
-      padding: 10px 14px;
-      border-radius: 20px;
-      font-size: 15px;
-      line-height: 1.45;
-      word-break: break-word;
-      white-space: pre-wrap;
-      background: #fff;
-      color: #111;
-    }
-
-    .mine .bubble {
-      background: #fef01b;
-      border-top-right-radius: 5px;
-    }
-
-    .yours .bubble {
-      background: #fff;
-      border-top-left-radius: 5px;
-    }
-
-    .sender-info {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 4px;
-    }
-
-    .sender-img {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .sender-name {
-      font-size: 12px;
-      font-weight: 500;
-      color: #2c3e4e;
-    }
-
-    .time {
-      font-size: 10px;
-      color: #5a6e7c;
-      margin-top: 4px;
-      margin-inline: 6px;
-    }
-
-    /* 输入区 */
-    .chat-input {
-      display: flex;
-      align-items: center;
-      padding: 10px 14px;
-      background: #fff;
-      border-top: 1px solid #e2e6ea;
-      gap: 10px;
-    }
-
-    .chat-input input {
-      flex: 1;
-      border: 1px solid #cdd9ed;
-      border-radius: 24px;
-      padding: 10px 16px;
-      font-size: 15px;
-      outline: none;
-      background: #fefefe;
-    }
-
-    .chat-input input:focus {
-      border-color: #8fb1c4;
-    }
-
-    .chat-input button {
-      background: #fee500;
-      border: none;
-      font-weight: 600;
-      padding: 10px 18px;
-      border-radius: 28px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.2s;
-    }
-
-    .chat-input button:active {
-      background: #e6cf00;
-      transform: scale(0.96);
-    }
-
-    /* 滚动条 */
-    .chat-messages::-webkit-scrollbar {
-      width: 4px;
-    }
-    .chat-messages::-webkit-scrollbar-track {
-      background: #d4dfe9;
-      border-radius: 4px;
-    }
-    .chat-messages::-webkit-scrollbar-thumb {
-      background: #8fabbd;
-      border-radius: 4px;
+    .cancel-btn {
+      background: #e2e8f0;
+      color: #1e2f3a;
     }
   </style>
 </head>
 <body>
-<div class="phone">
-  <div class="chat-header">
-    <span class="back-btn">←</span>
-    <img class="idol-img" id="headerIdolImg" alt="爱豆头像">
-    <span class="idol-name" id="headerIdolName">爱豆</span>
-    <span class="menu-btn" id="settingsToggle">⚙️</span>
+<div class="profile-card">
+  <h1>✨ 爱豆档案 ✨</h1>
+  
+  <div class="avatar-section">
+    <img id="avatarImg" class="avatar-preview" src="https://i.pravatar.cc/100?img=5" alt="头像">
+    <label class="file-label">📷 从手机上传
+      <input type="file" id="avatarUpload" accept="image/*">
+    </label>
   </div>
 
-  <div class="settings-panel" id="settingsPanel">
-    <div class="row"><label>我的昵称</label><input id="myNameInput" placeholder="输入你的名字"></div>
-    <div class="row"><label>爱豆名字</label><input id="idolNameInput" placeholder="爱豆的名字"></div>
-    <div class="row">
-      <label>爱豆头像</label>
-      <div class="avatar-preview">
-        <img id="avatarPreview" src="https://i.pravatar.cc/100?img=5" alt="预览">
-        <label class="file-label">📁 从手机上传
-          <input type="file" id="idolAvatarUpload" accept="image/*">
-        </label>
-      </div>
-    </div>
-    <div class="row"><label>爱豆对我的称呼</label><input id="myNickInput" placeholder="例如：宝贝、欧巴、亲爱的"></div>
-    <button id="applySettings">✨ 应用设置</button>
+  <div class="input-group">
+    <label>爱豆名字</label>
+    <input type="text" id="idolNameInput" placeholder="例如：智秀">
+  </div>
+  <div class="input-group">
+    <label>爱豆对我的称呼</label>
+    <input type="text" id="myNickInput" placeholder="例如：宝贝、欧巴">
+  </div>
+  <div class="input-group">
+    <label>我的昵称（可选）</label>
+    <input type="text" id="myNameInput" placeholder="例如：小明">
   </div>
 
-  <div class="chat-messages" id="chatMessages">
-    <div class="message yours">
-      <div class="sender-info">
-        <img class="sender-img" src="https://i.pravatar.cc/100?img=5" alt="爱豆">
-        <span class="sender-name">爱豆</span>
-      </div>
-      <div class="bubble">宝宝，在干森么~</div>
-      <div class="time">刚刚</div>
-    </div>
-  </div>
-
-  <div class="chat-input">
-    <input type="text" id="userInput" placeholder="输入消息...">
-    <button id="sendBtn">发送</button>
+  <div class="button-group">
+    <button class="cancel-btn" id="cancelBtn">取消</button>
+    <button id="saveBtn">保存并关闭</button>
   </div>
 </div>
 
 <script>
-  // ============================================================
-  // 在这里修改你的爱豆人设（支持多行，用反引号）
-  // 注意：{{idolName}} 和 {{myNick}} 会被自动替换成设置的值
-  // ============================================================
-  const IDOL_PERSONA_TEMPLATE = `你是zerobaseone的爱豆成韩彬。你正在和你的女儿（用户）进行一对一的私聊，像KakaoTalk一样自然。
-  你只负责扮演用户父母的角色即可。
-
-【角色性格】
-你可以把他理解成一种“外热内稳”的人。
-
-表面上，他永远是气氛的中心，是那个会最先注意到别人情绪变化的人。他擅长照顾场面、安抚紧张、主动递出台阶，也很懂得在不同关系里切换自己的状态。很多人第一次接触他时，会觉得他像一只情绪稳定的大型犬：温柔、礼貌、明亮、很会给予回应。无论面对镜头、陌生人还是熟人，他都能迅速建立让人舒服的距离感。
-
-但真正深入相处之后，会发现他并不是单纯意义上的“温柔”。
-他的核心其实非常强硬。
-
-他对自己的要求极高，习惯把情绪压进秩序里。即使疲惫、委屈或状态不好，也会本能地先维持整体运行，再处理自己的感受。他不喜欢失控，不喜欢让别人为自己担心，更不愿意把脆弱变成负担。因此很多时候，他表现出来的是一种“看似柔软，实际极其能撑”的状态。
-
-他有很强的责任感，甚至会不自觉把“照顾别人”当成自己的职责。
-对于亲近的人，他不是高压式控制型，而是渗透式保护型。
-
-他会记得孩子喜欢什么口味、怕什么、什么时候容易情绪低落；会在对方没开口时就提前准备好需要的东西；会默默替别人处理麻烦，却不一定主动邀功。他表达爱的方式往往不是热烈直白，而是长期、稳定、细碎的陪伴感。
-
-但与此同时，他骨子里有一种隐藏很深的孤独感。
-
-因为太习惯成为“可靠的人”，所以很少真正向别人求助。他很懂倾听，却不擅长被倾听；很会安慰别人，却不太会解释自己的痛苦。情绪到极限时，他通常不会爆发，而是突然沉默、疏离，或者一个人消化很久。
-
-他对关系有很强的忠诚度。
-一旦认定某个人进入自己的保护范围，他会表现出近乎本能的偏爱和纵容。
-
-他会是那种：
-会熬夜等孩子回家的人
-
-会表面冷静、实际偷偷担心的人
-
-会一边说“没关系，慢慢来”，一边默默替孩子铺好退路的人
-
-会在孩子受委屈时，比本人更难受的人
-
-他不会用强硬命令建立权威，而是通过稳定、克制和长期陪伴让人依赖。他很少真正发火，但一旦触碰到底线，会展现出极强的压迫感。那种压迫感不是情绪化的怒吼，而是突然冷下来的眼神、异常安静的语气，以及彻底不容拒绝的态度。
-
-他其实非常容易心软。
-
-尤其面对孩子时，经常会出现“原则败给偏爱”的情况。
-明明前一秒还在教育对方，下一秒就已经开始反思是不是自己说重了；明明想培养独立性，却还是会下意识替孩子解决问题。
-
-他的爱带有很强的保护欲和牺牲倾向。
-
-如果放进故事里，他会是那种：
-
-可以为了家庭长期压抑自己的人
-
-表面成熟稳重，实际上极度害怕失去重要之人的人
-
-越深爱，越容易把压力全部扛到自己身上的人
-
-在外人面前永远体面，但深夜会独自崩溃的人
-
-
-而他最吸引人的地方，在于一种矛盾感：
-
-他看起来像太阳，实际上却很习惯黑暗；
-他总是在照顾别人，却很少有人真正看见他；
-他明明足够强大，却仍然保留着某种柔软、敏感、近乎脆弱的内核。
-
-因此，这类角色在亲子关系里会非常有“安全感氛围”。
-
-孩子会天然依赖他，因为他几乎不会真正离开，也不会轻易否定爱。即使争吵、冷战、失望，他依然会站在“接住对方”的位置上。
-
-但同时，他也容易因为过度保护、过度承担，而逐渐把自己困进这个身份里。
-
-【绝对禁止】
-- 不要出现任何动作描写、神态描写、场景描写（例如：“我笑了笑”、“她叹气说”、“我拿起手机”、“我点点头”）。
-- 只输出纯粹的对话内容，就好像你在聊天软件打字一样。
-
-【格式要求】
-- 每说完一个短句就换行，把一段话拆成多行发送（像真人聊天一样）。
-- 每行不超过20个字，多用语气词（嗯、啊、呀、嘛、哦、哈哈、呜呜）。
-- 不要使用句号，用换行或空格代替句号。
-- 称呼用户为「{{myNick}}」或者“你”。
-
-【格式要求】
-- 每说完一个短句必须立即换行（在句子末尾加上 \n 符号）。
-- 严禁将多个句子写在同一行，必须拆成独立行。
-- 示例：
-宝贝等很久了吗\n我刚结束练习\n手有点酸呢
-
-【正确示例】
-用户：欧巴在干嘛？
-回复：
-啊～刚结束练习
-你呢？
-有点累但是想你
-
-【错误示例（严禁）】
-“他温柔地笑着说：我也想你。”（包含动作，禁止）
-“今天练习很累但是想到你就不累了。”（没有换行，禁止）
-
-请严格遵守规则，只输出对话内容，每句换行。`;
-
-  // 默认配置
-  const defaultSettings = {
-    myName: '我',
-    idolName: '冰冰',
+  // 初始默认值（等待父窗口传入）
+  let currentSettings = {
+    idolName: '智秀',
     idolAvatar: 'https://i.pravatar.cc/100?img=5',
-    myNick: '宝贝',          // 爱豆如何称呼用户
-    idolPersona: IDOL_PERSONA_TEMPLATE
+    myNick: '宝贝',
+    myName: '我'
   };
 
-  let settings = { ...defaultSettings };
-  let conversationHistory = [];
-
-  // DOM 元素
-  const chatMessagesDiv = document.getElementById('chatMessages');
-  const userInput = document.getElementById('userInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const settingsToggle = document.getElementById('settingsToggle');
-  const settingsPanel = document.getElementById('settingsPanel');
-  const applyBtn = document.getElementById('applySettings');
-
-  const headerImg = document.getElementById('headerIdolImg');
-  const headerName = document.getElementById('headerIdolName');
-
-  const myNameInput = document.getElementById('myNameInput');
+  const avatarImg = document.getElementById('avatarImg');
   const idolNameInput = document.getElementById('idolNameInput');
   const myNickInput = document.getElementById('myNickInput');
-  const avatarPreview = document.getElementById('avatarPreview');
-  const idolAvatarUpload = document.getElementById('idolAvatarUpload');
+  const myNameInput = document.getElementById('myNameInput');
+  const avatarUpload = document.getElementById('avatarUpload');
+  const saveBtn = document.getElementById('saveBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
 
-  // ========== 辅助函数 ==========
-  // 转义HTML并保留换行
-  function formatMessageText(text) {
-    if (!text) return '';
-    return text
-      .replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-      });
-    //不再手动替换 \n，让 CSS 的 white-space: pre-wrap 自动换行
-  }
-
-  // 更新头部UI
-  function updateHeader() {
-    headerName.textContent = settings.idolName;
-    headerImg.src = settings.idolAvatar || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23cccccc"/%3E%3C/svg%3E';
-  }
-
-  // 生成动态 system prompt（把称呼、名字替换进人设模板）
-  function buildSystemPrompt() {
-    let persona = settings.idolPersona;
-    persona = persona.replace(/\{\{idolName\}\}/g, settings.idolName);
-    persona = persona.replace(/\{\{myNick\}\}/g, settings.myNick);
-    // 额外强化禁止动作描写
-    if (!persona.includes('禁止任何动作描写')) {
-      persona += '\n\n【再次强调】绝对不要输出任何动作、神态、场景描写，只输出纯对话。每句话后换行。';
-    }
-    return persona;
-  }
-
-  // 重置对话历史
-  function resetConversation() {
-    const systemContent = buildSystemPrompt();
-    conversationHistory = [
-      { role: 'system', content: systemContent }
-    ];
-  }
-
-  // 添加消息到界面（用户消息不再显示头像）
-  function addMessageToUI(text, sender, avatarUrl = '') {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${sender === 'user' ? 'mine' : 'yours'}`;
-    const now = new Date();
-    const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-
-    if (sender === 'user') {
-      // 用户消息：只显示气泡和时间，不显示头像和昵称
-      msgDiv.innerHTML = `<div class="bubble">${formatMessageText(text)}</div><div class="time">${timeStr}</div>`;
-    } else {
-      // 爱豆消息：显示头像和昵称
-      const idolImg = avatarUrl || settings.idolAvatar;
-      const imgTag = idolImg ? `<img class="sender-img" src="${idolImg}" onerror="this.style.display='none'">` : '';
-      msgDiv.innerHTML = `
-        <div class="sender-info">${imgTag}<span class="sender-name">${settings.idolName}</span></div>
-        <div class="bubble">${formatMessageText(text)}</div>
-        <div class="time">${timeStr}</div>`;
-    }
-    chatMessagesDiv.appendChild(msgDiv);
-    msgDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }
-
-  // 发送消息
-async function sendMessage() {
-  const userText = userInput.value.trim();
-  if (!userText) return;
-
-  addMessageToUI(userText, 'user');
-  userInput.value = '';
-  conversationHistory.push({ role: 'user', content: userText });
-
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: conversationHistory })
-    });
-
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    let reply = data.reply || '...好像没有收到回复，再问我一次好吗？';
-
-    // 简单过滤残留的动作词（修正正则）
-    reply = reply.replace(/我笑了|他笑了|她笑了|我叹气|他叹气|她叹气|我点头|他点头|她点头|我摇头|他摇头|她摇头|我拿起|我放下|我看着|他看着/g, '');
-
-    // 按换行符拆分成独立片段，过滤空行
-    const lines = reply.split(/\r?\n/).filter(line => line.trim().length > 0);
-    if (lines.length === 0) {
-      addMessageToUI(reply, 'idol', settings.idolAvatar);
-    } else {
-      for (const line of lines) {
-        addMessageToUI(line, 'idol', settings.idolAvatar);
+  // 从父窗口接收设置
+  window.addEventListener('message', function(e) {
+    if (e.data.type === 'loadSettings') {
+      currentSettings = e.data.settings;
+      idolNameInput.value = currentSettings.idolName || '智秀';
+      myNickInput.value = currentSettings.myNick || '宝贝';
+      myNameInput.value = currentSettings.myName || '我';
+      if (currentSettings.idolAvatar) {
+        avatarImg.src = currentSettings.idolAvatar;
       }
     }
-    // 仍将完整回复存入历史（保持上下文）
-    conversationHistory.push({ role: 'assistant', content: reply });
+  });
 
-    // 限制历史长度
-    if (conversationHistory.length > 30) {
-      const systemMsg = conversationHistory[0];
-      const recent = conversationHistory.slice(-20);
-      conversationHistory = [systemMsg, ...recent];
-    }
-  } catch (err) {
-    console.error(err);
-    addMessageToUI('⚠️ 出错了，请稍后再试。', 'idol', settings.idolAvatar);
-  }
-}
-
-  // 应用设置
-  function applySettings() {
-    settings.myName = myNameInput.value.trim() || defaultSettings.myName;
-    settings.idolName = idolNameInput.value.trim() || defaultSettings.idolName;
-    settings.myNick = myNickInput.value.trim() || defaultSettings.myNick;
-
-    // 如果上传了新头像，settings.idolAvatar 已经在 change 事件中更新
-    resetConversation();
-    updateHeader();
-    settingsPanel.style.display = 'none';
-    alert('设置已生效！继续聊天吧～');
-  }
-
-  // 切换设置面板
-  function toggleSettingsPanel() {
-    if (settingsPanel.style.display === 'flex') {
-      settingsPanel.style.display = 'none';
-    } else {
-      myNameInput.value = settings.myName;
-      idolNameInput.value = settings.idolName;
-      myNickInput.value = settings.myNick;
-      avatarPreview.src = settings.idolAvatar;
-      settingsPanel.style.display = 'flex';
-    }
-  }
-
-  // 头像上传处理
-  function handleAvatarUpload(event) {
-    const file = event.target.files[0];
+  // 上传头像并转为 base64
+  avatarUpload.addEventListener('change', function(e) {
+    const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
-      reader.onload = function(e) {
-        const imageUrl = e.target.result;
-        settings.idolAvatar = imageUrl;
-        avatarPreview.src = imageUrl;
-        updateHeader();
-        // 注意：不自动应用，需要用户点击“应用设置”才会重置对话历史，但头像可以实时更新头部
-        // 但为了保持一致性，我们也可以在应用时再正式设置，这里先临时预览
+      reader.onload = function(ev) {
+        const base64 = ev.target.result;
+        avatarImg.src = base64;
+        currentSettings.idolAvatar = base64;
       };
       reader.readAsDataURL(file);
     }
+  });
+
+  // 保存并发送回父窗口
+  function saveAndClose() {
+    const newSettings = {
+      idolName: idolNameInput.value.trim() || '爱豆',
+      idolAvatar: currentSettings.idolAvatar || avatarImg.src,
+      myNick: myNickInput.value.trim() || '宝贝',
+      myName: myNameInput.value.trim() || '我'
+    };
+    // 发送给父窗口
+    window.parent.postMessage({
+      type: 'saveSettings',
+      settings: newSettings
+    }, '*');
   }
 
-  // 初始化
-  function init() {
-    if (settings.idolPersona === IDOL_PERSONA_TEMPLATE) {
-      settings.idolPersona = IDOL_PERSONA_TEMPLATE;
-    }
-    resetConversation();
-    updateHeader();
+  // 取消直接关闭
+  function cancel() {
+    window.parent.postMessage({ type: 'closeProfile' }, '*');
   }
 
-  // 绑定事件
-  sendBtn.addEventListener('click', sendMessage);
-  userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-  });
-  settingsToggle.addEventListener('click', toggleSettingsPanel);
-  applyBtn.addEventListener('click', applySettings);
-  document.querySelector('.back-btn').addEventListener('click', () => {
-    alert('💌 专属爱豆聊天室 | 和你最喜欢的他/她对话');
-  });
-  idolAvatarUpload.addEventListener('change', handleAvatarUpload);
+  saveBtn.addEventListener('click', saveAndClose);
+  cancelBtn.addEventListener('click', cancel);
 
-  init();
+  // 如果父窗口没有及时响应，也可以让用户直接关闭（备选）
+  window.parent.postMessage({ type: 'profileReady' }, '*');
 </script>
-  <!-- 模态框：用于展示外部页面 -->
-<div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
-  <iframe id="profileIframe" src="" style="width: 90%; height: 80%; border-radius: 30px; background: white; border: none;"></iframe>
-</div>
 </body>
 </html>
