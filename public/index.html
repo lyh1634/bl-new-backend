@@ -518,48 +518,51 @@
   }
 
   // 发送消息
-  async function sendMessage() {
-    const userText = userInput.value.trim();
-    if (!userText) return;
+async function sendMessage() {
+  const userText = userInput.value.trim();
+  if (!userText) return;
 
-    addMessageToUI(userText, 'user');
-    userInput.value = '';
+  addMessageToUI(userText, 'user');
+  userInput.value = '';
+  conversationHistory.push({ role: 'user', content: userText });
 
-    conversationHistory.push({ role: 'user', content: userText });
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: conversationHistory })
+    });
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conversationHistory })
-      });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    let reply = data.reply || '...好像没有收到回复，再问我一次好吗？';
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      let reply = data.reply || '…好像没有收到回复，再问我一次好吗？';
+    // 简单过滤残留的动作词（修正正则）
+    reply = reply.replace(/我笑了|他笑了|她笑了|我叹气|他叹气|她叹气|我点头|他点头|她点头|我摇头|他摇头|她摇头|我拿起|我放下|我看着|他看着/g, '');
 
-      // 简单过滤残留的动作词
-      reply = reply.replace(/[我他她]笑了|[我他她]叹气|[我他她]点头|[我他她]摇头|我拿起|我放下|我看着|他看着/g, '');
-      
-      // 按换行符拆分成独立片段，过滤空行
-const lines = reply.split(/\r?\n/).filter(line => line.trim().length > 0);
-for (const line of lines) {
-    addMessageToUI(line, 'idol', settings.idolAvatar);
-}
-// 仍将完整回复存入历史（保持上下文）
-conversationHistory.push({ role: 'assistant', content: reply });
-
-      // 限制历史长度
-      if (conversationHistory.length > 30) {
-        const systemMsg = conversationHistory[0];
-        const recent = conversationHistory.slice(-20);
-        conversationHistory = [systemMsg, ...recent];
+    // 按换行符拆分成独立片段，过滤空行
+    const lines = reply.split(/\r?\n/).filter(line => line.trim().length > 0);
+    if (lines.length === 0) {
+      addMessageToUI(reply, 'idol', settings.idolAvatar);
+    } else {
+      for (const line of lines) {
+        addMessageToUI(line, 'idol', settings.idolAvatar);
       }
-    } catch (err) {
-      console.error(err);
-      addMessageToUI('⚠️ 出错了，请稍后再试。', 'idol', settings.idolAvatar);
     }
+    // 仍将完整回复存入历史（保持上下文）
+    conversationHistory.push({ role: 'assistant', content: reply });
+
+    // 限制历史长度
+    if (conversationHistory.length > 30) {
+      const systemMsg = conversationHistory[0];
+      const recent = conversationHistory.slice(-20);
+      conversationHistory = [systemMsg, ...recent];
+    }
+  } catch (err) {
+    console.error(err);
+    addMessageToUI('⚠️ 出错了，请稍后再试。', 'idol', settings.idolAvatar);
   }
+}
 
   // 应用设置
   function applySettings() {
