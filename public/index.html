@@ -320,7 +320,7 @@
         <img class="sender-img" src="https://i.pravatar.cc/100?img=5" alt="爱豆">
         <span class="sender-name">爱豆</span>
       </div>
-      <div class="bubble">嗨～今天心情怎么样？</div>
+      <div class="bubble">宝宝，在干森么~</div>
       <div class="time">刚刚</div>
     </div>
   </div>
@@ -428,7 +428,7 @@
   // 默认配置
   const defaultSettings = {
     myName: '我',
-    idolName: '智秀',
+    idolName: '冰冰',
     idolAvatar: 'https://i.pravatar.cc/100?img=5',
     myNick: '宝贝',          // 爱豆如何称呼用户
     idolPersona: IDOL_PERSONA_TEMPLATE
@@ -464,8 +464,8 @@
         if (m === '<') return '&lt;';
         if (m === '>') return '&gt;';
         return m;
-      })
-      .replace(/\n/g, '<br>');
+      });
+    //
   }
 
   // 更新头部UI
