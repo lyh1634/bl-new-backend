@@ -37,13 +37,13 @@
 
     /* 头部：只显示名字，居中 */
     .chat-header {
-      background: #A3C4D6;
-      padding: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-bottom: 1px solid #8fb1c4;
-    }
+  background: #B2C7DA;  /* 与聊天背景一致 */
+  padding: 8px 16px;    /* 原来16px，降低高度 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: none;  /* 可选去掉边框 */
+}
     .idol-name {
       font-weight: 700;
       font-size: 20px;
@@ -80,10 +80,10 @@
     }
 
     .message .bubble {
-      padding: 10px 14px;
+      padding: 6px 12px;
       border-radius: 20px;
-      font-size: 15px;
-      line-height: 1.45;
+      font-size: 14px;
+      line-height: 1.4;
       word-break: break-word;
       white-space: pre-wrap;
       background: #fff;
@@ -299,7 +299,7 @@
 宝贝等很久了吗\n我刚结束练习\n手有点酸呢
 
 【正确示例】
-用户：欧巴在干嘛？
+用户：在干嘛？
 回复：
 啊～刚结束练习
 你呢？
@@ -314,9 +314,9 @@
   // 默认配置
   const defaultSettings = {
     myName: '我',
-    idolName: '冰冰',
+    idolName: '鼠儿',
     idolAvatar: 'https://i.pravatar.cc/100?img=5',
-    myNick: '宝贝',          // 爱豆如何称呼用户
+    myNick: '主人',          // 爱豆如何称呼用户
     idolPersona: IDOL_PERSONA_TEMPLATE
   };
 
@@ -364,25 +364,49 @@
     ];
   }
 
-  function addMessageToUI(text, sender, avatarUrl = '') {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${sender === 'user' ? 'mine' : 'yours'}`;
-    const now = new Date();
-    const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  let lastMessageTime = null;
+let lastSender = null;
 
-    if (sender === 'user') {
-      msgDiv.innerHTML = `<div class="bubble">${formatMessageText(text)}</div><div class="time">${timeStr}</div>`;
-    } else {
-      const idolImg = avatarUrl || settings.idolAvatar;
-      const imgTag = idolImg ? `<img class="sender-img" src="${idolImg}" onerror="this.style.display='none'">` : '';
-      msgDiv.innerHTML = `
-        <div class="sender-info">${imgTag}<span class="sender-name">${settings.idolName}</span></div>
-        <div class="bubble">${formatMessageText(text)}</div>
-        <div class="time">${timeStr}</div>`;
+function addMessageToUI(text, sender, avatarUrl = '') {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${sender === 'user' ? 'mine' : 'yours'}`;
+  const now = new Date();
+  const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  
+  // 判断是否需要显示时间
+  let showTime = true;
+  if (lastSender === sender && lastMessageTime) {
+    const diff = now - lastMessageTime;
+    if (diff < 60000) { // 小于1分钟
+      showTime = false;
     }
-    chatMessagesDiv.appendChild(msgDiv);
-    msgDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
+  
+  if (sender === 'user') {
+    // 用户消息：气泡 + 可能的时间
+    let bubbleHtml = `<div class="bubble">${formatMessageText(text)}</div>`;
+    if (showTime) bubbleHtml += `<div class="time">${timeStr}</div>`;
+    msgDiv.innerHTML = bubbleHtml;
+  } else {
+    const idolImg = avatarUrl || settings.idolAvatar;
+    const imgTag = idolImg ? `<img class="sender-img" src="${idolImg}" onerror="this.style.display='none'">` : '';
+    let bubbleHtml = `
+      <div class="sender-info">${imgTag}<span class="sender-name">${settings.idolName}</span></div>
+      <div class="bubble">${formatMessageText(text)}</div>`;
+    if (showTime) bubbleHtml += `<div class="time">${timeStr}</div>`;
+    msgDiv.innerHTML = bubbleHtml;
+  }
+  
+  chatMessagesDiv.appendChild(msgDiv);
+  msgDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  
+  // 更新最后一条记录
+  lastMessageTime = now;
+  lastSender = sender;
+  
+  // 可选：如果上一条消息的时间被隐藏了，可以移除它的时间元素（但为了简单，上述逻辑已经只在需要时添加时间，所以不会有重复）
+  // 但是注意：如果上一条没有时间，当前需要显示时间，没问题。但是相同的连续消息如果间隔超过1分钟，当前会显示时间，这是合理的。
+}
 
   async function sendMessage() {
     const userText = userInput.value.trim();
