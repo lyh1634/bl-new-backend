@@ -179,16 +179,25 @@
     const now = new Date();
     const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
 
-    if (sender === 'user') {
-      msgDiv.innerHTML = `<div class="bubble">${text}</div><div class="time">${timeStr}</div>`;
-    } else {
-      const idolImg = avatarUrl || settings.idolAvatar || '';
-      const imgTag = idolImg ? `<img class="sender-img" src="${idolImg}" onerror="this.style.display='none'">` : '';
-      msgDiv.innerHTML = `
-        <div class="sender-info">${imgTag}<span class="sender-name">${settings.idolName}</span></div>
-        <div class="bubble">${text}</div>
-        <div class="time">${timeStr}</div>`;
-    }
+   // 将换行符转换为 <br>，并避免 XSS（简单转义）
+function formatMessage(text) {
+  return text.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  }).replace(/\n/g, '<br>');
+}
+
+// 然后在两个分支里使用：
+if (sender === 'user') {
+  msgDiv.innerHTML = `<div class="bubble">${formatMessage(text)}</div><div class="time">${timeStr}</div>`;
+} else {
+  msgDiv.innerHTML = `
+    <div class="sender-info">${imgTag}<span class="sender-name">${settings.idolName}</span></div>
+    <div class="bubble">${formatMessage(text)}</div>
+    <div class="time">${timeStr}</div>`;
+}
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
